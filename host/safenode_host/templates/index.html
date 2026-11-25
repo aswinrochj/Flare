@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAFE-NODE control room — {{ site }}</title>
+<style>
+  :root { --ok:#1f9d55; --warn:#d69e2e; --danger:#d32f2f; --fault:#ef8a17; --off:#6b7280; --bg:#f6f7f9; --ink:#1f2937; --line:#d9dde3; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--ink); background:var(--bg); }
+  header { display:flex; align-items:center; gap:16px; padding:12px 20px; background:#111827; color:#fff; }
+  header h1 { font-size:17px; margin:0; font-weight:600; }
+  #gw { margin-left:auto; padding:4px 10px; border-radius:999px; font-weight:600; background:var(--ok); }
+  #gw.lost { background:var(--danger); }
+  main { display:grid; grid-template-columns: 1fr 380px; gap:16px; padding:16px 20px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px; }
+  .card h2 { font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:#6b7280; margin:0 0 10px; }
+  #map { position:relative; height:420px; background:repeating-linear-gradient(0deg,#fafbfc 0 39px,#eef0f3 39px 40px),repeating-linear-gradient(90deg,transparent 0 39px,#eef0f3 39px 40px); border-radius:8px; border:1px solid var(--line); }
+  .node { position:absolute; transform:translate(-50%,-50%); width:150px; padding:8px 10px; border-radius:10px; color:#fff; box-shadow:0 2px 6px rgba(0,0,0,.15); }
+  .node b { display:block; font-size:13px; }
+  .node small { display:block; opacity:.92; }
+  .NORMAL { background:var(--ok); } .WARNING { background:var(--warn); } .DANGER { background:var(--danger); animation:pulse 1s infinite; }
+  .FAULT { background:var(--fault); } .OFFLINE { background:var(--off); }
+  @keyframes pulse { 50% { box-shadow:0 0 0 8px rgba(211,47,47,.25); } }
+  .node button { margin-top:6px; width:100%; border:0; border-radius:6px; padding:4px; font-weight:600; cursor:pointer; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  td, th { padding:4px 6px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  .pill { display:inline-block; min-width:64px; text-align:center; padding:1px 6px; border-radius:999px; color:#fff; font-size:11px; font-weight:600; }
+  .legend span { display:inline-block; margin-right:10px; } .legend i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:-1px; }
+  footer { padding:0 20px 16px; color:#6b7280; font-size:12px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>SAFE-NODE control room · site <code>{{ site }}</code></h1>
+  <span id="clock"></span>
+  <span id="gw">gateway …</span>
+</header>
+<main>
+  <section class="card">
+    <h2>Floor map</h2>
+    <div id="map"></div>
+    <p class="legend">
+      <span><i class="NORMAL"></i>Normal</span><span><i class="WARNING"></i>Warning</span>
+      <span><i class="DANGER"></i>Danger (latched)</span><span><i class="FAULT"></i>Fault</span>
+      <span><i class="OFFLINE"></i>Offline = unsafe</span>
+    </p>
+  </section>
+  <section>
+    <div class="card"><h2>Events</h2><table id="events"></table></div>
+    <div class="card" style="margin-top:16px"><h2>SMS outbox</h2><table id="sms"></table></div>
+  </section>
+</main>
+<footer>Student prototype (Team NEXUS, M2026-133). Not a certified gas detector or fire alarm.</footer>
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const t = ts => ts ? new Date(ts * 1000).toLocaleTimeString() : "";
+async function ack(id) {
+  await fetch(`/api/nodes/${id}/ack`, {method: "POST"});
+}
+async function refresh() {
+  let s;
+  try { s = await (await fetch("/api/state")).json(); } catch (e) { document.getElementById("gw").textContent = "host offline"; return; }
+  document.getElementById("clock").textContent = t(s.now);
+  const gw = document.getElementById("gw");
+  gw.textContent = s.gateway.lost ? "GATEWAY LOST" : (s.gateway.last_rx ? "gateway ok" : "waiting for gateway");
+  gw.className = s.gateway.lost ? "lost" : "";
+  document.getElementById("map").innerHTML = s.nodes.map(n => {
+    const st = n.offline ? "OFFLINE" : (n.state || "OFFLINE");
+    const gas = n.gas != null ? `Rs/R0 ${Number(n.gas).toFixed(2)}` : "";
+    const tc = n.temp_c != null ? ` · ${Number(n.temp_c).toFixed(1)} °C` : "";
+    const fl = (n.flags || []).filter(f => f !== "latched").join(", ");
+    const btn = st === "DANGER" ? `<button onclick="ack(${n.id})">Acknowledge</button>` : "";
+    return `<div class="node ${st}" style="left:${n.x}%;top:${n.y}%">
+      <b>${esc(n.name || "Node " + n.id)} · ${st}</b>
+      <small>${esc(n.zone || "")} · node ${n.id}</small>
+      <small>${gas}${tc}</small>
+      <small>${esc(fl)}${n.age_s != null ? " · seen " + n.age_s + " s ago" : ""}</small>${btn}</div>`;
+  }).join("");
+  document.getElementById("events").innerHTML = "<tr><th>Time</th><th>Node</th><th>Event</th><th>State</th><th>Cause</th></tr>" +
+    s.events.map(e => `<tr><td>${t(e.ts)}</td><td>${e.node ?? ""}</td><td>${esc(e.type)}</td>
+      <td>${e.state ? `<span class="pill ${esc(e.state)}">${esc(e.state)}</span>` : ""}</td><td>${esc(e.detail.cause || "")}</td></tr>`).join("");
+  document.getElementById("sms").innerHTML = "<tr><th>Queued</th><th>To</th><th>Message</th><th>Status</th></tr>" +
+    s.sms.map(m => `<tr><td>${t(m.created)}</td><td>${esc(m.to_number)}</td><td>${esc(m.body)}</td>
+      <td>${m.sent_at ? "sent" : "retry " + m.attempts}</td></tr>`).join("");
+}
+refresh();
+setInterval(refresh, 1000);
+</script>
+</body>
+</html>

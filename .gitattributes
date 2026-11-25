@@ -1,0 +1,18 @@
+* text=auto
+*.pdf    binary
+*.docx   binary
+*.png    binary
+*.zip    binary
+# Gerber, drill and KiCad files: keep LF so fab houses and diffs see identical bytes
+*.gtl text eol=lf
+*.gbl text eol=lf
+*.gts text eol=lf
+*.gbs text eol=lf
+*.gto text eol=lf
+*.gbo text eol=lf
+*.gtp text eol=lf
+*.gbp text eol=lf
+*.gm1 text eol=lf
+*.gbrjob text eol=lf
+*.drl text eol=lf
+*.kicad_* text eol=lf

@@ -1,0 +1,45 @@
+menu "SAFE-NODE node"
+
+    config SAFENODE_NODE_ID
+        int "Node ID (1-20); also selects the heartbeat slot"
+        range 1 20
+        default 1
+
+    config SAFENODE_FLAME_ACTIVE_LOW
+        bool "Flame module pulls AO LOW when it sees a flame (AR-9)"
+        default y
+        help
+            Most IR flame modules lower their analog output when a flame is
+            present. Confirm on the real module at commissioning.
+
+    config SAFENODE_LORA_SF
+        int "LoRa spreading factor (7 normal, 9 long range)"
+        range 7 12
+        default 7
+
+    config SAFENODE_ESPNOW_FALLBACK
+        bool "Repeat undelivered alerts over ESP-NOW"
+        default y
+
+    config SAFENODE_ESPNOW_CHANNEL
+        int "Wi-Fi channel used for ESP-NOW"
+        range 1 13
+        default 1
+
+    config SAFENODE_DEBUG_CONSOLE
+        bool "Enable the debug UART console (failure injection, calibration)"
+        default y
+        help
+            Commands for tests TC-3..TC-6 and SIM-6 (hang a task, flood the
+            logger, mute the radio, inject faults). Disable for deployment.
+
+    config SAFENODE_LATENCY_PROBE_GPIO
+        int "Spare GPIO toggled at a confirmed crossing (-1 = off)"
+        range -1 39
+        default 25
+        help
+            Probe for the logic-analyser latency measurement of TC-1 / TC-6:
+            goes high when the sensor task confirms DANGER. Compare with the
+            buzzer pin (GPIO13).
+
+endmenu

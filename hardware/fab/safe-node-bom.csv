@@ -1,0 +1,26 @@
+Item,References,Qty,Value,Footprint,Function,Indicative cost INR (Nov 2026),Notes
+1,U1,1,ESP32-DevKitC-V4,ESP32-DevKitC-V4_Socket,"Espressif ESP32-DevKitC V4 (WROOM-32) on 2x19 female sockets, rows 25.4 mm apart",450,"Two 1x19 2.54 mm female sockets, rows 25.4 mm apart"
+2,U2,1,RFM95W-868S2,HOPERF_RFM9XW_SMD,"HopeRF SX1276 LoRa module, operated at 865-867 MHz",690,
+3,J1,1,SMA 865MHz,SMA_Amphenol_132289_EdgeMount,SMA edge-mount antenna connector,100 (incl. antenna),
+4,J2,1,MQ-2 module,PinHeader_1x04_P2.54mm_Vertical,"MQ-2 module: VCC, GND, DO (unused), AO",110 (module),
+5,J3,1,Flame module,PinHeader_1x04_P2.54mm_Vertical,"IR flame module: VCC, GND, DO (unused), AO",60 (module),
+6,J4,1,DHT22 module,PinHeader_1x03_P2.54mm_Vertical,"DHT22/AM2302: VCC, DATA, GND",200 (module),
+7,J5,1,5V IN,TerminalBlock_bornier-2_P5.08mm,External 5 V input (adapter or 18650 + TP4056 + MT3608 module),,
+8,J6,1,VBAT sense,PinHeader_1x02_P2.54mm_Vertical,Battery cell voltage for monitoring,,
+9,JP1,1,5V_LINK,PinHeader_1x02_P2.54mm_Vertical,Fit only when the DevKit USB cable is NOT connected,,2-pin header + jumper shunt
+10,Q1,1,PN2222A,TO-92_Inline,"NPN buzzer driver, TO-92 E-B-C",,
+11,D1,1,RED hazard,LED_D5.0mm,5 mm red LED,,
+12,D2,1,GREEN healthy,LED_D5.0mm,5 mm green LED,,
+13,D3,1,YELLOW fault,LED_D5.0mm,5 mm yellow LED,,
+14,D4,1,1N4148,D_DO-35_SOD27_P7.62mm_Horizontal,Buzzer flyback diode,,
+15,D5,1,1N5819,D_DO-41_SOD81_P10.16mm_Horizontal,Reverse-polarity protection,,Set boost/adapter to 5.4 V so the MQ-2 heater sees 5.0 V after the diode drop
+16,BZ1,1,Buzzer 5V,Buzzer_12x9.5RM7.6,"Active 5 V buzzer, 12 mm",,
+17,R1,1,12k,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,"MQ-2 divider, top",,
+18,R2 R7,2,10k,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,"R2: MQ-2 divider, bottom; open-wire pull-down; R7: DHT22 pull-up (omit if module has one)",,R7 is DNP if the DHT22 module already has a pull-up
+19,R3 R4 R5,3,220,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,LED current limit,,
+20,R6,1,1k,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,Q1 base resistor,,
+21,R8 R9,2,100k,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,"R8: Battery divider, top; R9: Battery divider, bottom",,
+22,C1,1,100uF 10V,CP_Radial_D6.3mm_P2.50mm,5 V bulk,,
+23,C2,1,10uF 10V,CP_Radial_D5.0mm_P2.00mm,RFM95W bulk,,
+24,C3 C4 C5 C6 C7,5,100nF,C_Disc_D3.0mm_W1.6mm_P2.50mm,C3: RFM95W decoupling; C4: ADC input filter; C5: ADC input filter; C6: DHT22 decoupling; C7: ADC input filter,,
+25,H1 H2 H3 H4,4,M3,MountingHole_3.2mm_M3,Mounting hole,,"Holes only, no part"

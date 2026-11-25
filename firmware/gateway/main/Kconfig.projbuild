@@ -1,0 +1,13 @@
+menu "SAFE-NODE gateway"
+
+    config GATEWAY_LORA_SF
+        int "LoRa spreading factor (must match the nodes)"
+        range 7 12
+        default 7
+
+    config GATEWAY_ESPNOW_CHANNEL
+        int "Wi-Fi channel for the ESP-NOW fallback (must match the nodes)"
+        range 1 13
+        default 1
+
+endmenu

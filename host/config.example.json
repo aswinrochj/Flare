@@ -1,0 +1,8 @@
+{
+  "site": "sjce-lab",
+  "nodes": {
+    "1": { "zone": "lab",      "name": "ECE lab",        "x": 20, "y": 30 },
+    "2": { "zone": "corridor", "name": "Corridor 30 m",  "x": 55, "y": 55 },
+    "3": { "zone": "store",    "name": "Store room 60 m", "x": 82, "y": 28 }
+  }
+}

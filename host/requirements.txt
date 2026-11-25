@@ -1,0 +1,5 @@
+# SAFE-NODE host runtime dependencies (Python 3.10+)
+paho-mqtt>=2.0,<3
+flask>=3.0,<4
+pyserial>=3.5,<4
+requests>=2.31,<3

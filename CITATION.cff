@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "SAFE-NODE: Fail-Safe Real-Time Gas and Fire Safety Network"
+abstract: >-
+  An ESP32 and FreeRTOS based gas, flame and heat safety network with
+  self-diagnostics, watchdog recovery and LoRa reporting, designed so that
+  no failure is silent. VConnecTech Engineering Marathon 2026, Team ID M2026-133.
+type: software
+version: "1.1.0"
+date-released: "2026-11-25"
+license: [MIT, CERN-OHL-P-2.0, CC-BY-4.0]
+keywords: [ESP32, FreeRTOS, gas detection, fire safety, LoRa, fail-safe, embedded systems]
+authors:
+  - given-names: Dharshini
+    family-names: R
+    affiliation: "St. Joseph's College of Engineering, Chennai"
+  - given-names: Dheekshitha
+    family-names: R
+    affiliation: "St. Joseph's College of Engineering, Chennai"
+  - given-names: Aswin Roch
+    family-names: J
+    affiliation: "St. Joseph's College of Engineering, Chennai"
+  - given-names: Anto Prisin
+    family-names: D
+    affiliation: "St. Joseph's College of Engineering, Chennai"
